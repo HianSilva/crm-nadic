@@ -59,6 +59,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+LOGIN_REDIRECT_URL = '/products/'
+
 ROOT_URLCONF = 'crm.urls'
 
 TEMPLATES = [
