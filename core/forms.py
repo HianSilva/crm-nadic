@@ -50,8 +50,8 @@ class BaseOrderItemFormSet(forms.BaseInlineFormSet):
 OrderItemFormSet = forms.inlineformset_factory(
     Order,
     OrderItem,
-    fields=('product', 'quantity', 'product_sale_price'),
+    fields=('product', 'quantity',),
     formset=BaseOrderItemFormSet,
     extra=1,
-    can_delete=True
+    can_delete=False
 )
