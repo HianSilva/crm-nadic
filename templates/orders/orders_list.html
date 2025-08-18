@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos - CRM{% endblock %}
+
+{% block content %}
+<h2>Lista de Pedidos</h2>
+<a href="{% url 'order-create' %}" class="btn">+ Novo Pedido</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Total</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.customer.name }}</td>
+            <td>{{ order.datetime|date:"d/m/Y H:i" }}</td>
+            <td>R$ {{ order.total_price }}</td>
+            <td>
+                <a href="{% url 'order-detail' pk=order.id %}" class="btn-edit">Detalhes</a>
+                <a href="{% url 'order-delete' pk=order.id %}" class="btn-delete">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum pedido registrado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

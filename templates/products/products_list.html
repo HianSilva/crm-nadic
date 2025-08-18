@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Produtos - CRM{% endblock %}
+
+{% block content %}
+<h2>Lista de Produtos</h2>
+
+<a href="{% url 'product-create' %}" class="btn">+ Novo Produto</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td><a href="{% url 'product-detail' slug=product.name %}">{{ product.name }}</a></td>
+            <td>R$ {{ product.price }}</td>
+            <td>{{ product.stock_quantity }}</td>
+            <td>
+                <a href="{% url 'product-update' slug=product.name %}" class="btn-edit">Editar</a>
+                <a href="{% url 'product-delete' slug=product.name %}" class="btn-delete">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Nenhum produto cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes - {{ product.name }}{% endblock %}
+
+{% block content %}
+<h2>{{ product.name }}</h2>
+
+<p><strong>Preço:</strong> R$ {{ product.price }}</p>
+<p><strong>Estoque:</strong> {{ product.stock_quantity }}</p>
+<p><strong>Cadastrado em:</strong> {{ product.created_at|date:"d/m/Y H:i" }}</p>
+<p><strong>Última atualização:</strong> {{ product.updated_at|date:"d/m/Y H:i" }}</p>
+
+<div class="actions">
+    <a href="{% url 'product-update' slug=product.name %}" class="btn-edit">Editar</a>
+    <a href="{% url 'product-delete' slug=product.name %}" class="btn-delete">Excluir</a>
+    <a href="{% url 'products-list' %}" class="btn">Voltar</a>
+</div>
+{% endblock %}

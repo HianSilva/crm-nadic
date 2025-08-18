@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ Customer.name }} - Detalhes{% endblock %}
+
+{% block content %}
+<h2>{{ Customer.name }}</h2>
+<p><strong>Email:</strong> {{ Customer.email }}</p>
+<p><strong>Telefone:</strong> {{ Customer.phone }}</p>
+
+<div class="actions">
+    <a href="{% url 'customer-update' slug=Customer.name %}" class="btn-edit">Editar</a>
+    <a href="{% url 'customer-delete' slug=Customer.name %}" class="btn-delete">Excluir</a>
+    <a href="{% url 'customers-list' %}" class="btn">Voltar</a>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Registrar Venda{% endblock %}
+
+{% block content %}
+    <h2>Registrar Venda</h2>
+
+    <form method="post" id="order-form">
+        {% csrf_token %}
+        <h3>Dados do Pedido</h3>
+        {{ order_form.as_p }}
+
+        <h3>Itens do Pedido</h3>
+        <div id="formset-container">
+            {{ items_formset.management_form }}
+            {% for form in items_formset %}
+                <div class="formset-item">
+                    {{ form.as_p }}
+                    <button type="button" class="btn-delete remove-form">Remover</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-form" class="btn">+ Adicionar Item</button>
+        <br><br>
+        <button type="submit" class="btn">Finalizar Pedido</button>
+        <a href="{% url 'orders-list' %}" class="btn-cancel">Cancelar</a>
+    </form>
+
+    {% load static %}
+
+    <script src="{% static 'js/formset.js' %}"></script>
+{% endblock %}

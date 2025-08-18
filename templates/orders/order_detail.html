@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Detalhes Pedido{% endblock %}
+
+{% block content %}
+<h2>Pedido #{{ order.id }}</h2>
+<p><strong>Cliente:</strong> {{ order.customer.name }}</p>
+<p><strong>Data:</strong> {{ order.datetime|date:"d/m/Y H:i" }}</p>
+<p><strong>Total:</strong> R$ {{ order.total_price }}</p>
+
+<h3>Itens do Pedido</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.orderitem_set.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>R$ {{ item.product_sale_price }}</td>
+            <td>R$ {{ item.total_price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'orders-list' %}" class="btn">Voltar</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Clientes - CRM{% endblock %}
+
+{% block content %}
+<h2>Lista de Clientes</h2>
+<a href="{% url 'customer-create' %}" class="btn">+ Novo Cliente</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in Customers %}
+        <tr>
+            <td><a href="{% url 'customer-detail' pk=customer.id %}">{{ customer.name }}</a></td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.phone }}</td>
+            <td>
+                <a href="{% url 'customer-update' slug=customer.name %}" class="btn-edit">Editar</a>
+                <a href="{% url 'customer-delete' slug=customer.name %}" class="btn-delete">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum cliente cadastrado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

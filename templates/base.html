@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CRM{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>CRM - Sistema de Gestão</h1>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul>
+                <li><a href="{% url 'products-list' %}">Produtos</a></li>
+                <li><a href="{% url 'orders-list' %}">Pedidos</a></li>
+                <li><a href="{% url 'customers-list' %}">Clientes</a></li>
+                <li><a href="{% url 'revenues-list' %}">Faturamento</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; {{ now|date:"Y" }} CRM - Todos os direitos reservados</p>
+    </footer>
+</body>
+</html>
