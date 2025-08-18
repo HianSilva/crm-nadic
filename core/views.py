@@ -24,19 +24,26 @@ class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/new_product.html'
+    success_url = reverse_lazy('products-list')
 
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
+    template_name = 'products/product_update.html'
+    success_url = reverse_lazy('products-list')
+    slug_url_kwarg = 'slug'
+    slug_field = 'name'
 
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('products-list')
+    slug_url_kwarg = 'slug'
+    slug_field = 'name'
 
 # Orders Views
 class OrderCreateView(View):
     template_name = 'orders/sale_page.html'
-    success_url = reverse_lazy('products-list')
+    success_url = reverse_lazy('orders-list')
 
     def get(self, request, *args, **kwargs):
             order_form = OrderForm()
@@ -104,9 +111,14 @@ class CustomerCreateView(CreateView):
     context_object_name = 'Customer'
     template_name = 'customers/create_customer.html'
     form_class = CustomerForm
+    success_url = reverse_lazy('customers-list')
 
 class CustomerUpdateView(UpdateView):
     model = Customer
+    template_name = 'customers/customer_update.html'
+    slug_url_kwarg = 'slug'
+    slug_field = 'name'
+    success_url = reverse_lazy('customers-list')
     form_class = CustomerForm
 
 class CustomerDeleteView(DeleteView):
