@@ -19,12 +19,15 @@
     <tbody>
         {% for product in products %}
         <tr>
-            <td><a href="{% url 'product-detail' slug=product.name %}">{{ product.name }}</a></td>
+            <td><a href="{% url 'product-detail' slug=product.slug %}">{{ product.name }}</a></td>
             <td>R$ {{ product.price }}</td>
             <td>{{ product.stock_quantity }}</td>
             <td>
-                <a href="{% url 'product-update' slug=product.name %}" class="btn-edit">Editar</a>
-                <a href="{% url 'product-delete' slug=product.name %}" class="btn-delete">Excluir</a>
+                <a href="{% url 'product-update' slug=product.slug %}" class="btn-edit">Editar</a>
+                <form action="{% url 'product-delete' slug=product.slug %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">Excluir</button>
+                </form>
             </td>
         </tr>
         {% empty %}

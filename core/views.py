@@ -6,6 +6,7 @@ from core.forms import ProductForm, OrderForm, OrderItemFormSet, CustomerForm
 from core.models import Product, Order, Customer, Revenue
 from core.services import create_order_with_items
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.utils.text import slugify
 
 
 # Products Views
@@ -19,7 +20,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'product'
     template_name = 'products/product_detail.html'
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -33,13 +34,13 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'products/product_update.html'
     success_url = reverse_lazy('products-list')
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products-list')
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
 
 # Orders Views
 class OrderCreateView(LoginRequiredMixin, View):
@@ -103,7 +104,7 @@ class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
     context_object_name = 'Customer'
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
     template_name = 'customers/customer_detail.html'
     form_class = CustomerForm
 
@@ -118,14 +119,14 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     model = Customer
     template_name = 'customers/customer_update.html'
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
     success_url = reverse_lazy('customers-list')
     form_class = CustomerForm
 
 class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     model = Customer
     slug_url_kwarg = 'slug'
-    slug_field = 'name'
+    slug_field = 'slug'
     success_url = reverse_lazy('customers-list')
 
 # Revenues Views

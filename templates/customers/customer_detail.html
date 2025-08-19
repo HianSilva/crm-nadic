@@ -7,8 +7,11 @@
 <p><strong>Telefone:</strong> {{ Customer.phone }}</p>
 
 <div class="actions">
-    <a href="{% url 'customer-update' slug=Customer.name %}" class="btn-edit">Editar</a>
-    <a href="{% url 'customer-delete' slug=Customer.name %}" class="btn-delete">Excluir</a>
+    <a href="{% url 'customer-update' slug=Customer.slug %}" class="btn-edit">Editar</a>
+    <form action="{% url 'customer-delete' slug=Customer.slug %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-delete">Excluir</button>
+    </form>
     <a href="{% url 'customers-list' %}" class="btn">Voltar</a>
 </div>
 {% endblock %}

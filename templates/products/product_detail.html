@@ -11,8 +11,11 @@
 <p><strong>Última atualização:</strong> {{ product.updated_at|date:"d/m/Y H:i" }}</p>
 
 <div class="actions">
-    <a href="{% url 'product-update' slug=product.name %}" class="btn-edit">Editar</a>
-    <a href="{% url 'product-delete' slug=product.name %}" class="btn-delete">Excluir</a>
+    <a href="{% url 'product-update' slug=product.slug %}" class="btn-edit">Editar</a>
+    <form action="{% url 'product-delete' slug=product.slug %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-delete">Excluir</button>
+    </form>
     <a href="{% url 'products-list' %}" class="btn">Voltar</a>
 </div>
 {% endblock %}

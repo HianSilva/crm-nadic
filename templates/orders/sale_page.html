@@ -20,6 +20,13 @@
             {% endfor %}
         </div>
 
+        <div id="empty-form-template" style="display: none;">
+            <div class="formset-item">
+                {{ items_formset.empty_form.as_p }}
+                <button type="button" class="btn-delete remove-form">Remover</button>
+            </div>
+        </div>
+
         <button type="button" id="add-form" class="btn">+ Adicionar Item</button>
         <br><br>
         <button type="submit" class="btn">Finalizar Pedido</button>
@@ -27,6 +34,5 @@
     </form>
 
     {% load static %}
-
     <script src="{% static 'js/formset.js' %}"></script>
 {% endblock %}

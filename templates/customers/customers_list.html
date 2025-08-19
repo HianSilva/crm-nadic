@@ -17,12 +17,15 @@
     <tbody>
         {% for customer in Customers %}
         <tr>
-            <td><a href="{% url 'customer-detail' slug=customer.name %}">{{ customer.name }}</a></td>
+            <td><a href="{% url 'customer-detail' slug=customer.slug %}">{{ customer.name }}</a></td>
             <td>{{ customer.email }}</td>
             <td>{{ customer.phone }}</td>
             <td>
-                <a href="{% url 'customer-update' slug=customer.name %}" class="btn-edit">Editar</a>
-                <a href="{% url 'customer-delete' slug=customer.name %}" class="btn-delete">Excluir</a>
+                <a href="{% url 'customer-update' slug=customer.slug %}" class="btn-edit">Editar</a>
+                <form action="{% url 'customer-delete' slug=customer.slug %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">Excluir</button>
+                </form>
             </td>
         </tr>
         {% empty %}
