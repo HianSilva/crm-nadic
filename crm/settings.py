@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+    'https://127.0.0.1:8000',
+]
+
 
 # Application definition
 
@@ -59,7 +64,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-LOGIN_REDIRECT_URL = '/products/'
+LOGIN_REDIRECT_URL = 'products-list'
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = '/login/'
 
 ROOT_URLCONF = 'crm.urls'
 
