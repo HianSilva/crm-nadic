@@ -5,28 +5,29 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from core.forms import ProductForm, OrderForm, OrderItemFormSet, CustomerForm
 from core.models import Product, Order, Customer, Revenue
 from core.services import create_order_with_items
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 # Products Views
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     context_object_name = 'products'
     template_name = 'products/products_list.html'
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'products/product_detail.html'
     slug_url_kwarg = 'slug'
     slug_field = 'name'
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/new_product.html'
     success_url = reverse_lazy('products-list')
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/product_update.html'
@@ -34,14 +35,14 @@ class ProductUpdateView(UpdateView):
     slug_url_kwarg = 'slug'
     slug_field = 'name'
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products-list')
     slug_url_kwarg = 'slug'
     slug_field = 'name'
 
 # Orders Views
-class OrderCreateView(View):
+class OrderCreateView(LoginRequiredMixin, View):
     template_name = 'orders/sale_page.html'
     success_url = reverse_lazy('orders-list')
 
@@ -78,27 +79,27 @@ class OrderCreateView(View):
         }
         return render(request, self.template_name, context)
 
-class OrderListView(ListView):
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     context_object_name = 'orders'
     template_name = 'orders/orders_list.html'
 
-class OrderDetailView(DetailView):
+class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     context_object_name = 'order'
     template_name = 'orders/order_detail.html'
 
-class OrderDeleteView(DeleteView):
+class OrderDeleteView(LoginRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('orders-list')
 
 # Customers Views
-class CustomersListView(ListView):
+class CustomersListView(LoginRequiredMixin, ListView):
     model = Customer
     context_object_name = 'Customers'
     template_name = 'customers/customers_list.html'
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
     context_object_name = 'Customer'
     slug_url_kwarg = 'slug'
@@ -106,14 +107,14 @@ class CustomerDetailView(DetailView):
     template_name = 'customers/customer_detail.html'
     form_class = CustomerForm
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     context_object_name = 'Customer'
     template_name = 'customers/create_customer.html'
     form_class = CustomerForm
     success_url = reverse_lazy('customers-list')
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     model = Customer
     template_name = 'customers/customer_update.html'
     slug_url_kwarg = 'slug'
@@ -121,14 +122,17 @@ class CustomerUpdateView(UpdateView):
     success_url = reverse_lazy('customers-list')
     form_class = CustomerForm
 
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     model = Customer
     slug_url_kwarg = 'slug'
     slug_field = 'name'
     success_url = reverse_lazy('customers-list')
 
 # Revenues Views
-class RevenueListView(ListView):
+class RevenueListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Revenue
     context_object_name = 'revenues'
     template_name = 'revenues/revenues_list.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Owner').exists()
