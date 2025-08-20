@@ -6,32 +6,95 @@
 
     <form method="post" id="order-form">
         {% csrf_token %}
+        
         <h3>Dados do Pedido</h3>
         {{ order_form.as_p }}
 
         <h3>Itens do Pedido</h3>
+        
+        {% if items_formset.non_form_errors %}
+            <div class="alert alert-danger">
+                {% for error in items_formset.non_form_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <input type="hidden" name="items-TOTAL_FORMS" value="{{ items_formset.total_form_count }}" id="id_items-TOTAL_FORMS">
+        <input type="hidden" name="items-INITIAL_FORMS" value="{{ items_formset.initial_form_count }}" id="id_items-INITIAL_FORMS">
+        <input type="hidden" name="items-MIN_NUM_FORMS" value="{{ items_formset.min_num }}" id="id_items-MIN_NUM_FORMS">
+        <input type="hidden" name="items-MAX_NUM_FORMS" value="{{ items_formset.max_num }}" id="id_items-MAX_NUM_FORMS">
+
         <div id="formset-container">
-            {{ items_formset.management_form }}
             {% for form in items_formset %}
-                <div class="formset-item">
-                    {{ form.as_p }}
-                    <button type="button" class="btn-delete remove-form">Remover</button>
+                <div class="formset-item" data-form-index="{{ forloop.counter0 }}">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-row" style="display: flex; gap: 10px; align-items: end; margin-bottom: 10px;">
+                        <div class="form-group">
+                            {{ form.product.label_tag }}
+                            {{ form.product }}
+                            {% if form.product.errors %}
+                                <div class="error" style="color: red;">{{ form.product.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.quantity.label_tag }}
+                            {{ form.quantity }}
+                            {% if form.quantity.errors %}
+                                <div class="error" style="color: red;">{{ form.quantity.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {% if form.DELETE %}
+                                {{ form.DELETE }}
+                            {% endif %}
+                            {% if not forloop.first %}
+                                <button type="button" class="btn btn-danger remove-form">Remover</button>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
 
-        <div id="empty-form-template" style="display: none;">
-            <div class="formset-item">
-                {{ items_formset.empty_form.as_p }}
-                <button type="button" class="btn-delete remove-form">Remover</button>
+        <button type="button" id="add-form" class="btn btn-secondary">+ Adicionar Item</button>
+        <br><br>
+        <button type="submit" class="btn btn-primary">Finalizar Pedido</button>
+        <a href="{% url 'orders-list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+    <div id="empty-form-template" style="display: none;">
+        <div class="formset-item" data-form-index="__prefix__">
+            <div class="form-row" style="display: flex; gap: 10px; align-items: end; margin-bottom: 10px;">
+                <div class="form-group">
+                    <label for="id_items-__prefix__-product">Produto:</label>
+                    <select name="items-__prefix__-product" id="id_items-__prefix__-product">
+                        <option value="">Selecione um produto</option>
+                        {% for product in items_formset.empty_form.product.field.queryset %}
+                            <option value="{{ product.pk }}">{{ product.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_items-__prefix__-quantity">Quantidade:</label>
+                    <input type="number" name="items-__prefix__-quantity" min="1" id="id_items-__prefix__-quantity">
+                </div>
+                
+                <div class="form-group">
+                    <input type="checkbox" name="items-__prefix__-DELETE" id="id_items-__prefix__-DELETE" style="display: none;">
+                    <button type="button" class="btn btn-danger remove-form">Remover</button>
+                </div>
             </div>
         </div>
-
-        <button type="button" id="add-form" class="btn">+ Adicionar Item</button>
-        <br><br>
-        <button type="submit" class="btn">Finalizar Pedido</button>
-        <a href="{% url 'orders-list' %}" class="btn-cancel">Cancelar</a>
-    </form>
+    </div>
 
     {% load static %}
     <script src="{% static 'js/formset.js' %}"></script>

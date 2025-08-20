@@ -48,31 +48,41 @@ class OrderCreateView(LoginRequiredMixin, View):
     success_url = reverse_lazy('orders-list')
 
     def get(self, request, *args, **kwargs):
-            order_form = OrderForm()
-            items_formset = OrderItemFormSet(prefix='items')
+        order_form = OrderForm()
+        items_formset = OrderItemFormSet(prefix='items')
 
-            context = {
-                'order_form': order_form,
-                'items_formset': items_formset,
-            }
+        context = {
+            'order_form': order_form,
+            'items_formset': items_formset,
+        }
 
-            return render(request, self.template_name, context=context)
+        return render(request, self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
+        
         order_form = OrderForm(data=request.POST)
-        items_formset = OrderItemFormSet(data=request.POST)
+        items_formset = OrderItemFormSet(data=request.POST, prefix='items')
 
         if order_form.is_valid() and items_formset.is_valid():
             try:
                 customer = order_form.cleaned_data['customer']
-                items = items_formset.cleaned_data
+                
+                items = []
+                for form in items_formset:
+                    if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                        items.append(form.cleaned_data)
 
-                create_order_with_items(customer, items)
+                print(f"Valid items: {len(items)}")
 
-                return redirect(self.success_url)
+                if not items:
+                    items_formset._non_form_errors = ["Pelo menos um item deve ser adicionado ao pedido."]
+                else:
+                    create_order_with_items(customer, items)
+                    return redirect(self.success_url)
 
-            except ValueError as e:
-                items_formset.add_error(None, str(e))
+            except Exception as e:
+                print(f"Error creating order: {e}")
+                items_formset._non_form_errors = [str(e)]
 
         context = {
             'order_form': order_form,

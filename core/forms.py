@@ -23,35 +23,40 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ['customer']
 
-class BaseOrderItemFormSet(forms.BaseInlineFormSet):
+class OrderItemForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        label='Produto',
+        empty_label="Selecione um produto"
+    )
+    quantity = forms.IntegerField(
+        validators=[MinValueValidator(1)],
+        label='Quantidade',
+        widget=forms.NumberInput(attrs={'min': 1})
+    )
+
+    class Meta:
+        model = OrderItem
+        fields = ['product', 'quantity']
+
     def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get('product')
+        quantity = cleaned_data.get('quantity')
 
-        super().clean()
-
-        # Itera sobre cada formulário no formset
-        for form in self.forms:
-            # Não faz nada se o formulário não tiver dados
-            if not form.is_valid() or not form.cleaned_data:
-                continue
-
-            # Pega os dados validados do formulário
-            product = form.cleaned_data.get('product')
-            quantity = form.cleaned_data.get('quantity')
-
-            # Se 'product' ou 'quantity' não estiverem presentes, pula a validação
-            if not product or not quantity:
-                continue
-
-            # Verifica se a quantidade solicitada é maior que o estoque do produto
+        if product and quantity:
             if quantity > product.stock_quantity:
-                form.add_error('quantity',
-                               f'A quantidade solicitada ({quantity}) excede o estoque disponível ({product.stock}).')
+                raise forms.ValidationError(
+                    f'A quantidade solicitada ({quantity}) excede o estoque disponível ({product.stock_quantity}).'
+                )
 
-OrderItemFormSet = forms.inlineformset_factory(
-    Order,
-    OrderItem,
-    fields=('product', 'quantity',),
-    formset=BaseOrderItemFormSet,
+        return cleaned_data
+
+OrderItemFormSet = forms.formset_factory(
+    OrderItemForm,
     extra=1,
-    can_delete=False
+    can_delete=False,
+    min_num=1,
+    validate_min=True,
+    max_num=10
 )
