@@ -20,9 +20,12 @@
             <td>{{ order.customer.name }}</td>
             <td>{{ order.datetime|date:"d/m/Y H:i" }}</td>
             <td>R$ {{ order.total_price }}</td>
-            <td>
-                <a href="{% url 'order-detail' pk=order.id %}" class="btn-edit">Detalhes</a>
-                <a href="{% url 'order-delete' pk=order.id %}" class="btn-delete">Excluir</a>
+            <td style="display: flex; flex-direction: row; gap: 4px;">
+                <a href="{% url 'order-detail' pk=order.id %}">
+                    <button class="btn-edit">Detalhes</button></a>
+                <form action="{% url 'order-delete' pk=order.id %}" method="post">
+                    <button class="btn-delete" type="submit">Excluir</button>
+                </form>
             </td>
         </tr>
         {% empty %}

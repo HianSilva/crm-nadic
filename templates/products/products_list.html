@@ -23,7 +23,8 @@
             <td>R$ {{ product.price }}</td>
             <td>{{ product.stock_quantity }}</td>
             <td>
-                <a href="{% url 'product-update' slug=product.slug %}" class="btn-edit">Editar</a>
+                <a href="{% url 'product-update' slug=product.slug %}">
+                    <button class="btn-edit">Editar</button></a>
                 <form action="{% url 'product-delete' slug=product.slug %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn-delete">Excluir</button>
